@@ -1,0 +1,7 @@
+timestamp,ip,status_code,method,endpoint,cpu_usage,memory_usage
+2026-10-05T10:00:00Z,24.48.0.1,200,GET,/api/v1/resource,45.2,60.1
+2026-10-05T10:01:00Z,24.48.0.1,200,GET,/api/v1/resource,45.2,60.1
+2026-10-05T10:02:00Z,8.8.8.8,500,POST,/api/v1/data,89.5,85.3
+2026-10-05T10:03:00Z,1.1.1.1,500,GET,/api/v1/users,92.1,90.0
+2026-10-05T10:04:00Z,8.8.8.8,500,POST,/api/v1/data,89.5,85.3
+2026-10-05T10:05:00Z,200.1.1.1,200,GET,/index.html,12.0,30.5

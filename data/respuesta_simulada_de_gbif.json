@@ -1,0 +1,22 @@
+{
+        "results": [
+            {
+                "key": 19827364,
+                "scientificName": "Tremarctos ornatus",
+                "eventDate": "2026-10-05T10:00:00Z",
+                "countryCode": "EC",
+                "decimalLatitude": -0.180653,
+                "decimalLongitude": -78.467838,
+                "basisOfRecord": "HUMAN_OBSERVATION"
+            },
+            {
+                "key": 19827364,
+                "scientificName": "Tremarctos ornatus",
+                "eventDate": "2026-10-05T10:00:00Z",
+                "countryCode": "EC",
+                "decimalLatitude": -0.180653,
+                "decimalLongitude": -78.467838,
+                "basisOfRecord": "HUMAN_OBSERVATION"
+            }
+        ]
+    }

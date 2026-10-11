@@ -1,0 +1,23 @@
+[
+  {
+    "event_id": "evt_001",
+    "timestamp": "2026-10-05T10:10:00Z",
+    "ip": "24.48.0.1",
+    "level": "INFO",
+    "message": "User login successful"
+  },
+  {
+    "event_id": "evt_002",
+    "timestamp": "2026-10-05T10:11:00Z",
+    "ip": "8.8.8.8",
+    "level": "ERROR",
+    "message": "Internal Server Error 500 on database execution"
+  },
+  {
+    "event_id": "evt_001",
+    "timestamp": "2026-10-05T10:10:00Z",
+    "ip": "24.48.0.1",
+    "level": "INFO",
+    "message": "User login successful"
+  }
+]
