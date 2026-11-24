@@ -2,10 +2,6 @@ import json
 import os
 
 def parse_json_events(ruta_archivo):
-    """
-    Lee el archivo JSON de eventos, valida su estructura,
-    elimina duplicados y devuelve una lista de diccionarios limpios.
-    """
     eventos_unicos = []
     eventos_vistos = set()
 
@@ -13,7 +9,7 @@ def parse_json_events(ruta_archivo):
         with open(ruta_archivo, mode='r', encoding='utf-8') as file:
             data = json.load(file)
 
-            # Verificación de los datos parta ver si vienen en una lista o en una clave específica
+            # Verificación de los datos para ver si vienen en una lista o en una clave específica
             eventos = data if isinstance(data, list) else data.get('events', [])
 
             for event in eventos:

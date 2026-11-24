@@ -1,0 +1,20 @@
+{
+    "tipo_reporte": "Enriquecimiento de Geolocalización IP",
+    "total_consultas": 1,
+    "metricas": {
+        "porcentaje_errores_http_500": "0.00%",
+        "total_errores_500": 0,
+        "ips_criticas_o_anonimas": []
+    },
+    "detalle_geolocalizacion": [
+        {
+            "ip": "24.48.0.1",
+            "country": "Canada",
+            "region": "Quebec",
+            "city": "Montreal",
+            "latitude": 45.6085,
+            "longitude": -73.5493,
+            "isp": "Le Groupe Videotron Ltee"
+        }
+    ]
+}

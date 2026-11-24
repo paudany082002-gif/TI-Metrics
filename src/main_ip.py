@@ -9,7 +9,7 @@ def generar_reporte_ips():
     print("   INICIANDO REPORTE DE ENRIQUECIMIENTO DE IPs")
 
     # Simulación de una IP obtenida de un archivo de logs local
-    ip_objetivo = "24.48.0.1"
+    ip_objetivo = "24.48.0.1" 
 
     # 1. Consulta de IP y aplicación del parser
     registros = consultar_ip(ip_objetivo)

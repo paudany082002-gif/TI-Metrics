@@ -1,10 +1,6 @@
 import csv
 
 def parse_csv_logs(ruta_archivo):
-    """
-    Lee el archivo CSV de logs, elimina registros duplicados
-    usando un conjunto (set) y devuelve una lista de diccionarios limpios.
-    """
     logs_unicos = []
     logs_vistos = set()
     try:

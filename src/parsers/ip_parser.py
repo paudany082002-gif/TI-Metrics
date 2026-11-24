@@ -1,8 +1,4 @@
-def parse_ip_geolocation(raw_response):
-    """
-    Procesa la respuesta JSON de la API de geolocalización de IPs,
-    limpia los datos y asegura el tipado correcto.
-    """
+def parser_ip_geolocation(raw_response):
     registros_unicos = []
     registros_vistos = set()
 
