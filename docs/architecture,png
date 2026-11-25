@@ -1,0 +1,50 @@
++-----------------------------------+
+|             IpService             |
++-----------------------------------+
+| - url_base: str                   |
+| - timeout: int                    |
+| - codigo_estado: int (ej. 200)    |
++-----------------------------------+
+| + consultar_ip(ip: str): dict|list|
++-----------------------------------+
+                  |
+                  | (usa / envía respuesta cruda)
+                  v
++-----------------------------------+
+|             IpParser              |
++-----------------------------------+
+| - registros_unicos: list          |
+| - registros_vistos: set           |
++-----------------------------------+
+| + 	(raw_response): list     |
++-----------------------------------+
+                  |
+                  | (agregación: recibe registros limpios)
+                  v
++-----------------------------------+
+|             Metricas              |
++-----------------------------------+
+| - registros: list                 |
+| - errores_500: int                |
+| - ips_criticas: list              |
++-----------------------------------+
+| + calcular_metricas(): dict       |
+| + detectar_ips_criticas(): list   |
++-----------------------------------+
+        ^                     |
+        | (usa / reporta)     | (agregación: entrega métricas y datos)
+        |                     v
++------------------+  +-----------------------------------+
+|     ErrorHttp    |  |         GeneradorReporte          |
++------------------+  +-----------------------------------+
+| - codigo: int    |  | - ruta_salida: str                |
+| - mensaje: str   |  +-----------------------------------+
++------------------+  | + construir_payload(...): dict    |
+         ^            | + guardar_json(data: dict): None  |
+         |            +-----------------------------------+
+    +----+----+
+    |         |  (herencia: "es un tipo de")
+    v         v
++-------+ +-------+
+|Err400 | |Err500 |
++-------+ +-------+
