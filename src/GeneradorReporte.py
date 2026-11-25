@@ -7,8 +7,8 @@ from src.models.Metricas import BaseMetricasError
 from abc import ABC, abstractmethod
 
 class Reporte (ABC):
-    def __init__ (self, ruta_salida: str, ip:IpService, error: ErrorHttp,
-                           metricas: BaseMetricasError, registros:IpParser ):
+    def __init__ (self, ruta_salida: str, ip:IpService, error: ErrorHttp | None,
+                           metricas: BaseMetricasError, registros:IpParser | list ):
         self.ruta_salida = ruta_salida
         self.ip = ip
         self.error = error
@@ -19,8 +19,8 @@ class Reporte (ABC):
         pass
 
 class EstructuraDiccionario (Reporte):
-    def __init__ (self, ruta_salida: str, ip:IpService, error: ErrorHttp,
-                           metricas: BaseMetricasError, registros:IpParser,data: dict| None = None):
+    def __init__ (self, ruta_salida: str, ip:IpService, error: ErrorHttp | None,
+                           metricas: BaseMetricasError, registros:IpParser | list,data: dict| None = None):
         super().__init__(ruta_salida, ip, error, metricas, registros)
         self.data: dict = data if data is not None else {}
 
@@ -57,23 +57,28 @@ class EstructuraDiccionario (Reporte):
 
 if __name__ == "__main__":
     from src.models.Metricas import Metricas
-    from src.models.Errores import Error400
+
+    raiz_proyecto = Path(__file__).resolve().parents[1]
+    ruta_reporte = raiz_proyecto / "data" / "reporte_ips_output.json"
+
+    registros_prueba = [
+        {"query": "8.8.8.8", "status": "success", "codigo_estado": 200},
+        {"query": "", "status": "fail", "codigo_estado": 400},
+    ]
 
     servicio_ip = IpService()
     parser_ip = IpParser()
-    metricas = Metricas()
-    error = None  # O usa Error400("Bad Request", "...") si quieres probar un error
+    metricas_prueba = Metricas(registros=registros_prueba)
+    error_prueba = None
 
     reporte = EstructuraDiccionario(
-        ruta_salida="data/reporte_ips_output.json",
+        ruta_salida=str(ruta_reporte),
         ip=servicio_ip,
-        error=error,
-        metricas=metricas,
-        registros=parser_ip,
+        error=error_prueba,
+        metricas=metricas_prueba,
+        registros=registros_prueba,
     )
 
     reporte.construir_payload()
     reporte.guardar_json()
-    print("Reporte generado correctamente.")
-
-
+    print(f"Reporte generado correctamente en: {ruta_reporte}")

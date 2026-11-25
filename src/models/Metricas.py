@@ -15,7 +15,7 @@ class Metricas(BaseMetricasError):
         super().__init__(registros)
         self.errores_500 = errores_500
 
-    def indicador_error_400(self) -> dict:
+    def indicador_error_400(self)-> dict:
         """Indicador de calidad/validez de entrada (400): consultas o IPs inválidas."""
         total = len(self.registros)
         if total == 0:

@@ -347,4 +347,119 @@ class Metricas(BaseMetricasError):
             "indicador_500": self.indicador_error_500(),
         }
 ```
+### Registro de Prompt # 7
+- **Fecha:** 2026-11-23
+- **Módulo/Función:** src/GeneradorReporte.py (Reporte, EstructuraDiccionario)
+- **Prompt Enviado:** "si todo listo ahora vamos a la clase reporte que debe estar en utils no ?"
+- **Respuesta de la IA:** Se estructuró la clase abstracta Reporte (con construir_payload como método abstracto) y la subclase EstructuraDiccionario (antes estructura_diccionario) recibiendo ruta_salida, ip, error, metricas y registros, simplificando las llamadas directas a resumen_metricas() y detalle_error() en lugar de helpers complejos con getattr o callable.
+- **Análisis Crítico:** Al inicio se presentaron errores de referencias no resueltas en super().__init__ y de anotación de tipos al pasar None o una list en lugar de IpParser. Mantener la llamada directa a los métodos ya creados en Metricas y Errores evitó complejidad innecesaria y permitió alinear la estructura con la idea original del diseño.
+- **Solución Final Aplicada:**
+```
+import json
+from pathlib import Path
+from abc import ABC, abstractmethod
+from src.services.IpService import IpService
+from src.parsers.IpParser import IpParser
+from src.models.Errores import ErrorHttp
+from src.models.Metricas import BaseMetricasError
 
+
+class Reporte(ABC):
+    def __init__(
+        self,
+        ruta_salida: str,
+        ip: IpService,
+        error: ErrorHttp | None,
+        metricas: BaseMetricasError,
+        registros: IpParser | list,
+    ):
+        self.ruta_salida = ruta_salida
+        self.ip = ip
+        self.error = error
+        self.metricas = metricas
+        self.registros = registros
+
+    @abstractmethod
+    def construir_payload(self) -> dict:
+        pass
+
+
+class EstructuraDiccionario(Reporte):
+    def __init__(
+        self,
+        ruta_salida: str,
+        ip: IpService,
+        error: ErrorHttp | None,
+        metricas: BaseMetricasError,
+        registros: IpParser | list,
+        data: dict | None = None,
+    ):
+        super().__init__(ruta_salida, ip, error, metricas, registros)
+        self.data: dict = data if data is not None else {}
+
+    def construir_payload(self) -> dict:
+        lista_registros = (
+            self.registros
+            if isinstance(self.registros, list)
+            else getattr(self.registros, "registros", [])
+        )
+
+        self.data = {
+            "ruta_salida": self.ruta_salida,
+            "servicio_ip": type(self.ip).__name__,
+            "metricas": self.metricas.resumen_metricas(),
+            "total_registros_adjuntos": len(lista_registros),
+            "registros": lista_registros,
+            "error": {
+                "codigo": self.error.codigo,
+                "mensaje": self.error.mensaje,
+                "detalle": self.error.detalle_error(),
+            }
+            if self.error is not None
+            else None,
+        }
+        return self.data
+
+    def guardar_json(self, data: dict | None = None) -> None:
+        payload = data if data is not None else (self.data if self.data else self.construir_payload())
+        ruta = Path(self.ruta_salida)
+        ruta.parent.mkdir(parents=True, exist_ok=True)
+        with ruta.open("w", encoding="utf-8") as archivo:
+            json.dump(payload, archivo, indent=2, ensure_ascii=False)
+```
+### Registro de Prompt # 8
+- **Fecha:** 2026-11-24
+- **Módulo/Función:** src/GeneradorReporte.py (main, ruta_salida)
+- **Prompt Enviado:** "Hola, volví para completar el error de ayer" / "ok, ya borreo como ponemos el camino ?"
+- **Respuesta de la IA:** Se resolvió el TypeError al instanciar Metricas pasando registros en el bloque de prueba __main__, se corrigió la secuencia de escape '\d' en la ruta y se calculó la ruta hacia data/reporte_ips_output.json en la raíz del proyecto usando Path(__file__).resolve().parents[1] para evitar que el archivo se generara dentro de src o sobrescribiera salidas anteriores.
+- **Análisis Crítico:** Ejecutar el script sin pasar registros a Metricas bloqueaba la prueba inicial, y usar rutas relativas ambiguas desde src provocaba que los reportes se crearan dentro de subcarpetas de src en lugar de TI-Metrics/data. Resolver la ruta desde __file__ y limpiar las carpetas duplicadas garantizó que la salida quede en la carpeta data de la raíz del proyecto.
+- **Solución Final Aplicada:**
+```
+if __name__ == "__main__":
+    from src.models.Metricas import Metricas
+
+    raiz_proyecto = Path(__file__).resolve().parents[1]
+    ruta_reporte = raiz_proyecto / "data" / "reporte_ips_output.json"
+
+    registros_prueba = [
+        {"query": "8.8.8.8", "status": "success", "codigo_estado": 200},
+        {"query": "", "status": "fail", "codigo_estado": 400},
+    ]
+
+    servicio_ip = IpService()
+    parser_ip = IpParser()
+    metricas_prueba = Metricas(registros=registros_prueba)
+    error_prueba = None
+
+    reporte = EstructuraDiccionario(
+        ruta_salida=str(ruta_reporte),
+        ip=servicio_ip,
+        error=error_prueba,
+        metricas=metricas_prueba,
+        registros=registros_prueba,
+    )
+
+    reporte.construir_payload()
+    reporte.guardar_json()
+    print(f"Reporte generado correctamente en: {ruta_reporte}")
+```
